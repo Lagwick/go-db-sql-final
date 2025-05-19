@@ -62,14 +62,16 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 	for rows.Next() {
 		singleParcel := Parcel{}
 		err := rows.Scan(&singleParcel.Number, &singleParcel.Client, &singleParcel.Status, &singleParcel.Address, &singleParcel.CreatedAt)
-		if err = rows.Err(); err != nil {
+		if err != nil {
 			fmt.Println(err)
 			return nil, err
 		}
 		res = append(res, singleParcel)
 	}
 	// заполните срез Parcel данными из таблицы
-
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -111,13 +113,9 @@ func (s ParcelStore) Delete(number int) error {
 		return err
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	_, err = result.RowsAffected()
 	if err != nil {
 		return err
-	}
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("cannot delete parcel %d: not found or status is not %s", number, ParcelStatusRegistered)
 	}
 
 	return nil

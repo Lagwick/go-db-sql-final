@@ -151,12 +151,12 @@ func TestGetByClient(t *testing.T) {
 	// get by client
 	storedParcels, err := store.GetByClient(client)
 	require.NoError(t, err)
-	require.Len(t, storedParcels, len(parcels))
+	assert.Len(t, storedParcels, len(parcels))
 
 	// check
 	for _, p := range storedParcels {
 		original, ok := parcelMap[p.Number]
-		require.True(t, ok, "unexpected parcel with number %d", p.Number)
+		assert.True(t, ok, "unexpected parcel with number %d", p.Number)
 		assert.Equal(t, original, p)
 	}
 }
